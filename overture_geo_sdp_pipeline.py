@@ -87,25 +87,6 @@ CLUSTER_BY_COLS = ["xmin", "ymin", "xmax", "ymax"]
 
 # COMMAND ----------
 
-# Belt-and-suspenders: set here in addition to the pipeline Spark config
-# (see header).  These calls run during pipeline notebook initialisation,
-# before any table function is evaluated.
-#
-# On serverless compute the Spark-config allowlist may reject these preview
-# keys at runtime, which would raise and fail the whole update.  Guard them so
-# the pipeline still runs; the authoritative place to set them on serverless is
-# the pipeline-level `configuration` (which is applied before the notebook runs).
-for _k in (
-    "spark.databricks.delta.geo.preview.statsWrite.enabled",
-    "spark.databricks.delta.geo.preview.dataSkipping.enabled",
-):
-    try:
-        spark.conf.set(_k, "true")
-    except Exception as _e:  # noqa: BLE001 — config may be allowlist-restricted
-        print(f"[overture-pipeline] could not set {_k} from notebook: {_e}")
-
-# COMMAND ----------
-
 # ---------------------------------------------------------------------------
 # Shared reader helper
 # ---------------------------------------------------------------------------
