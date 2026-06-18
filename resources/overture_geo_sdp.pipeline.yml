@@ -1,0 +1,28 @@
+# Pipeline resource for the Overture geo SDP.
+#
+# Notes on configuration:
+#   * `catalog` + `schema` write into Unity Catalog (`${var.catalog}.${var.schema}`).
+#   * `channel: PREVIEW` is required for the GEOMETRY data-skipping preview
+#     features the pipeline relies on (statsWrite + dataSkipping).
+#   * The two `spark.databricks.delta.geo.preview.*` keys are set at the
+#     pipeline level so they apply to serverless runs (where notebook-level
+#     `spark.conf.set` may be rejected by the allowlist).
+#   * `serverless: true` is the default; flip the `pipeline_serverless` variable
+#     to `false` to run on classic compute (DBR 18.2 + Photon, single-user
+#     access mode — see the source notebook header for the IAM requirements).
+
+resources:
+  pipelines:
+    overture_geo_sdp:
+      name: overture_geo_sdp
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+      serverless: ${var.pipeline_serverless}
+      channel: ${var.pipeline_channel}
+      photon: true
+      libraries:
+        - notebook:
+            path: ../overture_geo_sdp_pipeline.py
+      configuration:
+        spark.databricks.delta.geo.preview.statsWrite.enabled: "true"
+        spark.databricks.delta.geo.preview.dataSkipping.enabled: "true"

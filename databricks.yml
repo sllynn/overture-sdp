@@ -1,0 +1,52 @@
+# Databricks Asset Bundle for the Overture geo SDP pipeline.
+#
+# This bundle is workspace-agnostic by design — `workspace.host` is intentionally
+# left unset so the host (and therefore the deploy target) is taken from the CLI
+# profile passed at deploy time. Example:
+#
+#   databricks bundle validate --profile fevm-geo-sme-emea
+#   databricks bundle deploy   --profile fevm-geo-sme-emea
+#   databricks bundle run      --profile fevm-geo-sme-emea overture_geo_sdp
+#
+# Switching workspaces is then just a matter of switching profile names — no
+# bundle edits required. Profiles are read from ~/.databrickscfg.
+
+bundle:
+  name: overture_geo_sdp
+
+# ---------------------------------------------------------------------------
+# Variables — overridable per-target or via `--var key=value`
+# ---------------------------------------------------------------------------
+variables:
+  catalog:
+    description: Unity Catalog catalog that owns the pipeline output schema.
+    default: geo_sme_emea_catalog
+  schema:
+    description: Schema (within `catalog`) where the pipeline writes its tables.
+    default: benchmarking
+  pipeline_serverless:
+    description: If true, run the SDP pipeline on serverless compute.
+    default: true
+  pipeline_channel:
+    description: Pipeline release channel. PREVIEW is required for the GEOMETRY preview features used here.
+    default: PREVIEW
+
+# ---------------------------------------------------------------------------
+# Resources are factored into resources/*.yml for clarity
+# ---------------------------------------------------------------------------
+include:
+  - resources/*.yml
+
+# ---------------------------------------------------------------------------
+# Targets
+#
+# A single `default` target keeps the bundle simple. The workspace it lands in
+# is determined entirely by the CLI profile (`--profile <name>`), not by
+# anything in this file. To add a second target (e.g. a long-lived "prod"
+# deployment with `mode: production`) add another entry below; both can still
+# rely on `--profile` for the host.
+# ---------------------------------------------------------------------------
+targets:
+  default:
+    mode: development
+    default: true

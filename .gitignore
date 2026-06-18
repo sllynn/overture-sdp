@@ -1,0 +1,13 @@
+# Databricks Asset Bundle local state
+.databricks/
+*.tfstate
+*.tfstate.backup
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# macOS
+.DS_Store
