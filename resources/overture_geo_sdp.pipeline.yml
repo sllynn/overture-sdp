@@ -23,6 +23,3 @@ resources:
       libraries:
         - notebook:
             path: ../overture_geo_sdp_pipeline.py
-      configuration:
-        spark.databricks.delta.geo.preview.statsWrite.enabled: "true"
-        spark.databricks.delta.geo.preview.dataSkipping.enabled: "true"
