@@ -1,4 +1,4 @@
-# overture_geo_sdp
+# Overture Maps Ingestion via Spark Declarative Pipelines
 
 A Spark Declarative Pipeline that reads four Overture Maps themes
 (`places`, `buildings`, `water`, `division_areas`) from public S3, filters to
